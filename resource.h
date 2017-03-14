@@ -186,6 +186,7 @@
 #define IDC_RAD_T2_TD1                  1179
 #define IDC_RAD_T2_TD2                  1180
 #define IDC_RAD_T2_TD3                  1181
+#define IDC_DATAFLOW_STATUS             1182
 #define ID_START                        32771
 
 // Next default values for new objects
@@ -195,7 +196,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32772
-#define _APS_NEXT_CONTROL_VALUE         1177
+#define _APS_NEXT_CONTROL_VALUE         1183
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

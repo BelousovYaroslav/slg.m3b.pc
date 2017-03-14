@@ -118,6 +118,7 @@ public:
 	CString	m_strParam10Val;
 	int		m_nT1_RadSelection;
 	int		m_nT2_RadSelection;
+	CString	m_strLblProtoErrors;
 	//}}AFX_DATA
 
 // Attributes
