@@ -29,7 +29,7 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#include "mscomm1.h"
+#include "mscomm.h"
 #define CYCLE_BUFFER_DN_DU 100
 //#define K_IMP_SEC   1.866						//большой лазер
 //#define K_IMP_SEC   2.903					//малый лазер

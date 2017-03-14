@@ -14,15 +14,20 @@
 //==============================================================================
 //  Includes
 //==============================================================================
-
-#include "NiGraph3DComponent.h"
-#include "NiCommonComponent.h"
-#include "NiDataSocketComponent.h"
-#include "NiMathComponent.h"
-#include "NiUiComponent.h"
-#include "NiUiCommonComponent.h"
-#include "NiUtilityComponent.h"
-#include "NiVisaComponent.h"
+#include <NiGraph.h>
+#include <NiComplexMatrix.h>
+#include <NiPlot.h>
+#include <NiPlots.h>
+#include <NiAxes.h>
+#include <NiAxis.h>
+//#include "NiGraph3DComponent.h"
+//#include "NiCommonComponent.h"
+//#include "NiDataSocketComponent.h"
+//#include "NiMathComponent.h"
+//#include "NiUiComponent.h"
+//#include "NiUiCommonComponent.h"
+//#include "NiUtilityComponent.h"
+//#include "NiVisaComponent.h"
 
 //==============================================================================
 //  Namespaces

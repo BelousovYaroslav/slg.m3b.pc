@@ -1,7 +1,8 @@
 //{{AFX_INCLUDES()
-#include "NiGraph.h"
-#include "NiNumEdit.h"
+#include <NiGraph.h>
+#include <NiNumEdit.h>
 //#include "mscomm1.h"
+
 //}}AFX_INCLUDES
 #if !defined(AFX_DECCOEFFCALC_H__020067C5_FCDA_4E68_A23A_930EE2034BDF__INCLUDED_)
 #define AFX_DECCOEFFCALC_H__020067C5_FCDA_4E68_A23A_930EE2034BDF__INCLUDED_
