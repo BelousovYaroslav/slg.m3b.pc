@@ -71,6 +71,7 @@ extern double gl_dec_coeff_dU_acc;
 extern double gl_dec_coeff_acc;
 extern int gl_dec_coeff_acc_cntr;
 
+extern int gl_nMarkerFails, gl_nCheckSummFails;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainView
@@ -145,6 +146,7 @@ CMainView::CMainView()
 	m_strParam10Val = _T("");
 	m_nT1_RadSelection = 0;
 	m_nT2_RadSelection = 1;
+	m_strLblProtoErrors = _T("");
 	//}}AFX_DATA_INIT
 	m_nCounterSkippedPoints = 0;
 	m_nPointsSkipped = 0;	
@@ -247,6 +249,7 @@ void CMainView::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_PARAM10_VAL, m_strParam10Val);
 	DDX_Radio(pDX, IDC_RAD_T1_TD1, m_nT1_RadSelection);
 	DDX_Radio(pDX, IDC_RAD_T2_TD1, m_nT2_RadSelection);
+	DDX_Text(pDX, IDC_DATAFLOW_STATUS, m_strLblProtoErrors);
 	//}}AFX_DATA_MAP
 }
 
@@ -709,7 +712,8 @@ void CMainView::OnSize(UINT nType, int cx, int cy)
 		
 		base += rc.Height(); base += 5;
 
-		x = cx - 210 + 5;
+		/*
+    x = cx - 210 + 5;
 		pWnd = GetDlgItem( IDC_PARAM7_TITLE);
 		pWnd->SetWindowPos( NULL, x, base, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
 		pWnd->GetWindowRect( rc);
@@ -726,6 +730,7 @@ void CMainView::OnSize(UINT nType, int cx, int cy)
 		pWnd->SetWindowPos( NULL, x, base, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
 		
 		base += rc.Height(); base += 5;
+    */
 
 		x = cx - 210 + 5;
 		pWnd = GetDlgItem( IDC_PARAM8_TITLE);
@@ -763,6 +768,7 @@ void CMainView::OnSize(UINT nType, int cx, int cy)
 		
 		base += rc.Height(); base += 5;
 
+    /*
 		x = cx - 210 + 5;
 		pWnd = GetDlgItem( IDC_PARAM10_TITLE);
 		pWnd->SetWindowPos( NULL, x, base, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
@@ -780,7 +786,8 @@ void CMainView::OnSize(UINT nType, int cx, int cy)
 		pWnd->SetWindowPos( NULL, x, base, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
 		
 		base += rc.Height(); base += 5;
-		
+		*/
+
 		x = cx - 210 + 5;
 		pWnd = GetDlgItem( IDC_BTN_SAVE_PARAMS);
 		pWnd->SetWindowPos( NULL, x, base, 0, 0, SWP_NOZORDER + SWP_NOSIZE);
@@ -994,6 +1001,14 @@ void CMainView::RefreshGraphs()
 		case 2: m_ctlSmallGraph1.PlotXY( lineW10000, true); break;
 		case 3: m_ctlSmallGraph1.PlotXY( lineW100000, true); break;
 	}
+
+  double dblMin = min( m_ctlSmallGraph2.GetAxes().Item( "YAxis-1").GetMinimum(), m_ctlSmallGraph3.GetAxes().Item( "YAxis-1").GetMinimum());
+  double dblMax = min( m_ctlSmallGraph2.GetAxes().Item( "YAxis-1").GetMaximum(), m_ctlSmallGraph3.GetAxes().Item( "YAxis-1").GetMaximum());
+  m_ctlSmallGraph2.GetAxes().Item( "YAxis-1").SetMinimum( 0.5);//dblMin);
+  m_ctlSmallGraph2.GetAxes().Item( "YAxis-1").SetMaximum( 0.65);//dblMax);
+  m_ctlSmallGraph3.GetAxes().Item( "YAxis-1").SetMinimum( 0.5);//dblMin);
+  m_ctlSmallGraph3.GetAxes().Item( "YAxis-1").SetMaximum( 0.65);//dblMax);
+
 	m_ctlSmallGraph2.PlotXY( lineI1, true);
 	m_ctlSmallGraph3.PlotXY( lineI2, true);
 	m_ctlSmallGraph4.PlotXY( lineVpc, true);
@@ -1306,10 +1321,10 @@ void CMainView::OnInitialUpdate()
 	GetDlgItem( IDC_RMSVAL_LABEL)->SetFont( &m_pFont);
 
 	if( (( CSlg2App *) AfxGetApp())->m_nControlButtons) {
-		m_ctlNedtParam1.SetDiscreteInterval( m_dKimpSec);
-		m_ctlNedtParam1.SetIncDecValue( m_dKimpSec);
-		m_ctlNedtParam1.SetAccelInc( m_dKimpSec * 5.);
-		m_ctlNedtParam1.SetMaximum( m_dKimpSec * 255.);
+		m_ctlNedtParam1.SetDiscreteInterval( 1.);//m_dKimpSec);
+		m_ctlNedtParam1.SetIncDecValue( 1.);//m_dKimpSec);
+		m_ctlNedtParam1.SetAccelInc( 5.);
+		m_ctlNedtParam1.SetMaximum( 255);
 		
 	
 		GetDlgItem( IDC_BTN_SAVE_PARAMS)->EnableWindow( false);
@@ -1558,10 +1573,12 @@ void CMainView::OnTimer(UINT nIDEvent)
 		GetDlgItem( IDC_BTN_EXPORT)->EnableWindow( gl_avW100.GetCounter());
 		m_strSoftwareVersion = app->m_strSoftwareVer;
 		
+    m_strLblProtoErrors.Format( _T("MF: %d CF: %d"), gl_nMarkerFails, gl_nCheckSummFails);
+
 		//////////////////////////////////////////////////////////////////////
 		// Обновляем управленческие параметры
 		//////////////////////////////////////////////////////////////////////
-		m_strParam1Val.Format( _T("%.2f"), ( double) (( CSlg2App *) AfxGetApp())->m_btParam1 * m_dKimpSec);		//код амплитуды
+		m_strParam1Val.Format( _T("%.2f"), ( double) (( CSlg2App *) AfxGetApp())->m_shParam1 * m_dKimpSec / 100.);		//код амплитуды
 		m_strParam2Val.Format( _T("%d"), (( CSlg2App *) AfxGetApp())->m_btParam2);											//код такта подставки
 		m_strParam3Val.Format( _T("%.2f"), ( double) (( CSlg2App *) AfxGetApp())->m_btParam3 / 250.);		//коэффициент M
 		m_strParam4Val.Format( _T("%.2f"), ( double) (( CSlg2App *) AfxGetApp())->m_btParam4 / 100.);		//начальная мода
@@ -1714,7 +1731,7 @@ void CMainView::OnTimer(UINT nIDEvent)
 	if( nIDEvent == MY_TIMER_LOADED_FLASH_PARAMS_TO_WNDS) {
 		if( (( CSlg2App *) AfxGetApp())->m_nControlButtons) {
 			if( (( CSlg2App *) AfxGetApp())->m_shSignCoeff) {
-				m_ctlNedtParam1.SetValue( ( double) (( CSlg2App *) AfxGetApp())->m_btParam1 * m_dKimpSec);
+				m_ctlNedtParam1.SetValue( ( double) (( CSlg2App *) AfxGetApp())->m_shParam1 * m_dKimpSec * 100.);
 				m_ctlNedtParam2.SetValue( (( CSlg2App *) AfxGetApp())->m_btParam2);
 				m_ctlNedtParam3.SetValue( ( double) (( CSlg2App *) AfxGetApp())->m_btParam3 / 250.);		//
 				m_ctlNedtParam4.SetValue( 0.01 * ( double) (( CSlg2App *) AfxGetApp())->m_btParam4);
@@ -1939,6 +1956,8 @@ void CMainView::OnValueChangedCwStart( BOOL Value)
     app->m_cbT3 = new CSlgCircleBuffer( nArraySize);
 		app->m_cbTsa = new CSlgCircleBuffer( nArraySize);
 
+    gl_nMarkerFails = 0;
+    gl_nCheckSummFails = 0;
 
 		((CSlg2App *) AfxGetApp())->StartThreads();
 
@@ -1951,6 +1970,7 @@ void CMainView::OnValueChangedCwStart( BOOL Value)
 			case 2: m_ctlCOM.SetSettings( _T("128000,N,8,1")); break;
 			case 3: m_ctlCOM.SetSettings( _T("256000,N,8,1")); break;
       case 4: m_ctlCOM.SetSettings( _T("512000,N,8,1")); break;
+      case 5: m_ctlCOM.SetSettings( _T("921600,N,8,1")); break;
 		}
 		m_ctlCOM.SetPortOpen( true);
 
@@ -2055,9 +2075,14 @@ void CMainView::OnParam1Btn()
 	UpdateData( true);
 	char byte = 0;
 	
-	double q = m_ctlNedtParam1.GetValue() / m_dKimpSec;
-	byte = ( char) q;
-	SendCommandToMc( 0, byte, 0);
+	double q = m_ctlNedtParam1.GetValue() / m_dKimpSec * 100.;
+	short val2b = ( short) q;
+
+  char b1 = (char) ( val2b & 0xFF);
+  char b2 = (char) ( ( val2b & 0xFF00) >> 8);
+ 
+
+	SendCommandToMc( 0, b1, b2);
 	
 	SetSendButtonsState( FALSE);
 	SetTimer( MY_TIMER_LOAD_FLASH_PARAMS, 500, NULL);
@@ -2208,10 +2233,10 @@ void CMainView::OnKillfocusEdtKImpSec()
 {
 	UpdateData( true);
 	if( ((CSlg2App *) AfxGetApp())->m_nControlButtons) {
-		m_ctlNedtParam1.SetDiscreteInterval( m_dKimpSec);
-		m_ctlNedtParam1.SetIncDecValue( m_dKimpSec);
-		m_ctlNedtParam1.SetAccelInc( m_dKimpSec * 5.);
-		m_ctlNedtParam1.SetMaximum( m_dKimpSec * 255.);
+		m_ctlNedtParam1.SetDiscreteInterval( 1);//m_dKimpSec);
+		m_ctlNedtParam1.SetIncDecValue( 1);//m_dKimpSec);
+		m_ctlNedtParam1.SetAccelInc( 5.);//m_dKimpSec * 5.);
+		m_ctlNedtParam1.SetMaximum( 255);//m_dKimpSec * 255.);
 	}
 }
 

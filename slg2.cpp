@@ -40,6 +40,9 @@ int gl_nCircleBufferGet;
 int gl_nCircleBufferPut;
 bool gl_PutByteInCircleBuffer( BYTE bt);
 
+int gl_nMarkerFails;
+int gl_nCheckSummFails;
+
 int gl_GetCircleBufferDistance( void)
 {
 	return( ( CYCLE_BUFFER_LEN + gl_nCircleBufferPut - gl_nCircleBufferGet) % CYCLE_BUFFER_LEN);
@@ -123,13 +126,17 @@ DWORD WINAPI BigThread(LPVOID lparam)
             case 0:
               if( byte1 == 0x55)
                 nMarkerCounter++;
+              else
+                gl_nMarkerFails++;
             break;
 
             case 1:
               if( byte1 == 0xAA)
                 nMarkerCounter++;  //2! (условие выхода)
-              else
+              else {
                 nMarkerCounter = 0;
+                gl_nMarkerFails++;
+              }
             break;
           }
 				} 
@@ -230,7 +237,8 @@ DWORD WINAPI BigThread(LPVOID lparam)
         strMsg.Format( _T("\nBytes:\n%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\nCS(mc): %02x\nCS(pc): %02x"),
                 byte1, byte2, byte3, byte4, byte5, byte6,
                 byte7, byte8, byte9, byte10, byte11, byte12, btCheckSumm);
-        AfxMessageBox( _T("Несовпадение контрольной суммы! FAIL!") + strMsg);
+        //AfxMessageBox( _T("Несовпадение контрольной суммы! FAIL!") + strMsg);
+        gl_nCheckSummFails++;
         continue;
         //PostQuitMessage( 0);
       }
@@ -330,7 +338,10 @@ DWORD WINAPI BigThread(LPVOID lparam)
 					case 5: gl_avVpc.AddPoint( dCur1);		break;
 					case 6: gl_avAmplAng.AddPoint( dCur1); break;
 
-					case 7: ( ( CSlg2App *) AfxGetApp())->m_btParam1 = nCur1;  break;
+					case 7:
+            ( ( CSlg2App *) AfxGetApp())->m_shParam1 = nCur1;
+            //theApp.m_pLogger->LogDebug( "07.Amplitude: %d", nCur1);
+          break;
 					case 8: ( ( CSlg2App *) AfxGetApp())->m_btParam2 = nCur1; break;
 					case 9: ( ( CSlg2App *) AfxGetApp())->m_btParam3 = nCur1; break;
 					case 10: ( ( CSlg2App *) AfxGetApp())->m_btParam4 = nCur1; break;
@@ -473,8 +484,10 @@ DWORD WINAPI BigThread(LPVOID lparam)
 						double T2 = gl_avT2.GetMean();						//термодатчик 2
 						gl_pT2 = T2 / 65535. * 200. - 100.;				//V!
 
+            /*
             //DEBUG:
             gl_pT2 = T2;
+            */
 					}
           /*
           if( gl_avT2.GetCounter()) {
@@ -490,8 +503,10 @@ DWORD WINAPI BigThread(LPVOID lparam)
 						double T3 = gl_avT3.GetMean();						//термодатчик 3
 						gl_pT3 = T3 / 65535. * 200. - 100.;				//V!
 
+            /*
             //DEBUG:
             gl_pT3 = T3;
+            */
 					}
 
 					/*double i1 = gl_avI1.GetMean();						//разрядный ток i1

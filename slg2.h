@@ -33,7 +33,7 @@ public:
 	double m_dKimpSec;
 	CSlg2App();
 	
-	BYTE m_btParam1;
+	short m_shParam1;
 	BYTE m_btParam2;
 	BYTE m_btParam3;
 	BYTE m_btParam4;

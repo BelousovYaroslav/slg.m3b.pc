@@ -49,6 +49,8 @@ CLogger::~CLogger()
 {
   if( m_fh != NULL)
     fclose( m_fh);
+
+  m_fh = NULL;
 }
 
 
@@ -59,15 +61,20 @@ void CLogger::LogTrace( const char *strMessage, ...)
   
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [TRACE] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [TRACE] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 void CLogger::LogDebug( const char *strMessage, ...)
@@ -76,15 +83,20 @@ void CLogger::LogDebug( const char *strMessage, ...)
 
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [DEBUG] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+  
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [DEBUG] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 void CLogger::LogInfo( const char *strMessage, ...)
@@ -93,15 +105,21 @@ void CLogger::LogInfo( const char *strMessage, ...)
 
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [INFO ] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [INFO ] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 void CLogger::LogWarn( const char *strMessage, ...)
@@ -110,15 +128,20 @@ void CLogger::LogWarn( const char *strMessage, ...)
 
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [WARN ] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+  
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [WARN ] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 void CLogger::LogError( const char *strMessage, ...)
@@ -127,15 +150,19 @@ void CLogger::LogError( const char *strMessage, ...)
 
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [ERROR] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [ERROR] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 void CLogger::LogFatal( const char *strMessage, ...)
@@ -144,15 +171,19 @@ void CLogger::LogFatal( const char *strMessage, ...)
 
   SYSTEMTIME lt;
   GetLocalTime(&lt);
-  fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [FATAL] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
+  if( m_fh != NULL)
+    fprintf( m_fh, "%d.%02d.%02d %02d:%02d:%02d [FATAL] ", lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 
   va_list arglist;
   va_start( arglist, strMessage);
-  vfprintf( m_fh, strMessage, arglist);
+  if( m_fh != NULL)
+    vfprintf( m_fh, strMessage, arglist);
   va_end( arglist);
 
-  fprintf( m_fh, "\n");
-  fflush( m_fh);
+  if( m_fh != NULL) {
+    fprintf( m_fh, "\n");
+    fflush( m_fh);
+  }
 }
 
 /*
